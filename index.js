@@ -17,7 +17,7 @@ let pause = false;
 
 let balls = [
   new Ball(30, 200, 10, 1, 2, "red"),
-  new Ball(150, 500, 10, 1, 2, "blue")
+  // new Ball(150, 500, 10, 1, 2, "blue")
 ]
 
 // let ball = new Ball(30, 200, 10, 1, 2, "red");
