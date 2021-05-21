@@ -9,15 +9,20 @@ export class Paddle {
     this.upKey = upKey;
     this.downKey = downKey;
     this.color = color;
+    this.score = 0;
   }
 
   setDirection(d) {
     this.direction = d;
   }
 
+  setScore(num) {
+    this.score = num;
+  }
+
   draw(ctx) {
     ctx.fillStyle = "black";
-    ctx.fillRect(this.x, this.y, 10, 100);
+    ctx.fillRect(this.x, this.y, this.width, this.height);
     return ctx;
   }
 
