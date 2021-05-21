@@ -15,8 +15,12 @@ let keys = {
 
 let pause = false;
 
+let balls = [
+  new Ball(30, 200, 10, 1, 2, "red"),
+  new Ball(150, 500, 10, 1, 2, "blue")
+]
 
-let ball = new Ball(30, 200, 10, 1, 2, "red");
+// let ball = new Ball(30, 200, 10, 1, 2, "red");
 
 let player1 = new Paddle(50, 350, 10, 100, 2, keys.w, keys.s, "black");
 let player2 = new Paddle(740, 350, 10, 100, 2, keys.up, keys.down, "black");
@@ -36,14 +40,35 @@ setInterval(() => {
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  
+
   player1.draw(ctx);
   player2.draw(ctx);
   player1.move(canvas.height);
   player2.move(canvas.height);
 
-  ball.draw(ctx);
-  ball.move();
-  ball.bounce(canvas.width, canvas.height);
+  balls.forEach((ball) => {
+    ball.draw(ctx);
+    ball.move();
+
+    if (ball.x + (ball.radius) >= canvas.width) {
+      player1.setScore(player1.score + 1);
+      console.log(player1.score)
+      ball.setPosition(canvas.width/2, canvas.height/2);
+    } else if (ball.x - ball.radius <= 0) {
+      player2.setScore(player2.score + 1);
+      console.log(player2.score)
+      ball.setPosition(canvas.width/2, canvas.height/2);
+    }
+    if (ball.y + ball.radius >= canvas.height) {
+      ball.bounceVertical()
+    } else if (ball.y - ball.radius <= 0) {
+      ball.bounceVertical()
+    }
+
+    detectCollision(player1, ball);
+    detectCollision(player2, ball);
+  });
 }, 1)
 
 window.addEventListener('keydown', keyDown);
@@ -80,4 +105,41 @@ function keyDown(e) {
     case player2.downKey:
       player2.setDirection(code)
   }
+}
+
+function detectCollision(paddle, ball) {
+  let paddleLeftEdge = paddle.x;
+  let paddleRightEdge = paddle.x + paddle.width;
+  let paddleTopEdge = paddle.y;
+  let paddleBottomEdge = paddle.y + paddle.height;
+
+  let ballLeftEdge = ball.x - ball.radius;
+  let ballRightEdge = ball.x + ball.radius;
+  let ballTopEdge = ball.y - ball.radius;
+  let ballBottomEdge = ball.y + ball.radius;
+
+  if (ballLeftEdge <= paddleRightEdge &&
+      ballRightEdge >= paddleLeftEdge) {
+    if (ballTopEdge <= paddleBottomEdge && ballBottomEdge >= paddleBottomEdge) {
+      ball.bounceVertical();
+    }
+    if (ballBottomEdge >= paddleTopEdge && ballTopEdge <= paddleTopEdge) {
+      ball.bounceVertical();
+    }
+        
+  }
+
+  if (ballBottomEdge >= paddleTopEdge &&
+    ballTopEdge <= paddleBottomEdge) {
+      if (ballLeftEdge <= paddleRightEdge && ballRightEdge >= paddleRightEdge) {
+        ball.bounceHorizontal();
+      }
+      if (ballRightEdge >= paddleLeftEdge && ballLeftEdge <= paddleLeftEdge) {
+        ball.bounceHorizontal();
+      }
+  }
+
+
+
+  return
 }
