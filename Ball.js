@@ -8,8 +8,21 @@ export class Ball {
     this.color = color;
   }
 
+  setPosition(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  bounceHorizontal() {
+    this.speedX = -this.speedX;
+  }
+
+  bounceVertical() {
+    this.speedY = -this.speedY;
+  }
+
   draw(ctx) {
-    ctx.fillStyle = "red";
+    ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
     ctx.fill();
@@ -19,18 +32,5 @@ export class Ball {
   move() {
     this.x += this.speedX;
     this.y += this.speedY;
-  }
-
-  bounce(width, height) {
-    if (this.x + (this.radius) >= width) {
-      this.speedX = -this.speedX;
-    } else if (this.x - this.radius <= 0) {
-      this.speedX = -this.speedX;
-    }
-    if (this.y + this.radius >= height) {
-      this.speedY = -this.speedY;
-    } else if (this.y - this.radius <= 0) {
-      this.speedY = -this.speedY;
-    }
   }
 }
