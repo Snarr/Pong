@@ -16,8 +16,7 @@ let keys = {
 let pause = false;
 
 let balls = [
-  new Ball(30, 200, 10, 1, 2, "red"),
-  // new Ball(150, 500, 10, 1, 2, "blue")
+  new Ball(30, 200, 10, 1, 2.5, "red"),
 ]
 
 // let ball = new Ball(30, 200, 10, 1, 2, "red");
@@ -40,7 +39,8 @@ setInterval(() => {
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  
+  ctx.fillStyle = 'grey';
+  ctx.fillRect((canvas.width/2)-4, 0, 4, canvas.height);
 
   player1.draw(ctx);
   player2.draw(ctx);
@@ -54,11 +54,15 @@ setInterval(() => {
     if (ball.x + (ball.radius) >= canvas.width) {
       player1.setScore(player1.score + 1);
       console.log(player1.score)
+      updateTitleScore();
       ball.setPosition(canvas.width/2, canvas.height/2);
+      ball.bounceHorizontal();
     } else if (ball.x - ball.radius <= 0) {
       player2.setScore(player2.score + 1);
       console.log(player2.score)
+      updateTitleScore();
       ball.setPosition(canvas.width/2, canvas.height/2);
+      ball.bounceHorizontal();
     }
     if (ball.y + ball.radius >= canvas.height) {
       ball.bounceVertical()
@@ -120,10 +124,10 @@ function detectCollision(paddle, ball) {
 
   if (ballLeftEdge <= paddleRightEdge &&
       ballRightEdge >= paddleLeftEdge) {
-    if (ballTopEdge <= paddleBottomEdge && ballBottomEdge >= paddleBottomEdge) {
+    if (ballTopEdge <= paddleBottomEdge && ball.y >= paddleBottomEdge) {
       ball.bounceVertical();
     }
-    if (ballBottomEdge >= paddleTopEdge && ballTopEdge <= paddleTopEdge) {
+    if (ballBottomEdge >= paddleTopEdge && ball.y <= paddleTopEdge) {
       ball.bounceVertical();
     }
         
@@ -142,4 +146,8 @@ function detectCollision(paddle, ball) {
 
 
   return
+}
+
+function updateTitleScore() {
+  document.title = `Pong | ${player1.score} : ${player2.score}`
 }
