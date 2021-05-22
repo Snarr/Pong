@@ -3,9 +3,17 @@ export class Ball {
     this.x = x;
     this.y = y;
     this.radius = r;
+
     this.speedX = speedX;
     this.speedY = speedY;
+    this.directionX = -1;
+    this.directionY = -1;
+    
     this.color = color;
+
+    this.collisions = 0;
+    this.angle = 0;
+
   }
 
   setPosition(x, y) {
@@ -13,12 +21,26 @@ export class Ball {
     this.y = y;
   }
 
+  getCollisionCount() {
+    return this.collisions;
+  }
+
+  setCollisionCount(c) {
+    this.collisions = c;
+  }
+
+  setAngle(angle) {
+    this.angle = angle;
+  }
+
   bounceHorizontal() {
-    this.speedX = -this.speedX;
+    this.directionX = -this.directionX;
+    console.log("X collision");
   }
 
   bounceVertical() {
-    this.speedY = -this.speedY;
+    this.directionY = -this.directionY;
+    console.log("Y collision");
   }
 
   draw(ctx) {
@@ -30,7 +52,7 @@ export class Ball {
   }
 
   move() {
-    this.x += this.speedX;
-    this.y += this.speedY;
+    this.x += this.speedX*this.directionX + Math.log(this.collisions+1)*this.directionX;
+    this.y += this.speedY*this.directionY * this.angle;
   }
 }
