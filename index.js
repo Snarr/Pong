@@ -16,13 +16,13 @@ let keys = {
 let pause = false;
 
 let balls = [
-  new Ball(30, 200, 10, 1, 2.5, "red"),
+  new Ball(400, 400, 10, 1, 1, "red"),
 ]
 
 // let ball = new Ball(30, 200, 10, 1, 2, "red");
 
-let player1 = new Paddle(50, 350, 10, 100, 2, keys.w, keys.s, "black");
-let player2 = new Paddle(740, 350, 10, 100, 2, keys.up, keys.down, "black");
+let player1 = new Paddle(50, 350, 10, 100, 3, keys.w, keys.s, "black");
+let player2 = new Paddle(740, 350, 10, 100, 3, keys.up, keys.down, "black");
 
 let canvas;
 
@@ -55,15 +55,18 @@ setInterval(() => {
       player1.setScore(player1.score + 1);
       console.log(player1.score)
       updateTitleScore();
+      ball.setCollisionCount(0);
       ball.setPosition(canvas.width/2, canvas.height/2);
       ball.bounceHorizontal();
     } else if (ball.x - ball.radius <= 0) {
       player2.setScore(player2.score + 1);
       console.log(player2.score)
       updateTitleScore();
+      ball.setCollisionCount(0);
       ball.setPosition(canvas.width/2, canvas.height/2);
       ball.bounceHorizontal();
     }
+
     if (ball.y + ball.radius >= canvas.height) {
       ball.bounceVertical()
     } else if (ball.y - ball.radius <= 0) {
@@ -81,8 +84,6 @@ window.addEventListener('keyup', keyUp);
 function keyUp(e) {
   var code = e.keyCode;
 
-  console.log(code);
-
   switch (code) {
     case player1.upKey:
     case player1.downKey:
@@ -95,8 +96,6 @@ function keyUp(e) {
 
 function keyDown(e) {
   var code = e.keyCode;
-
-  console.log(code);
 
   switch (code) {
     case keys.space:
@@ -122,28 +121,26 @@ function detectCollision(paddle, ball) {
   let ballTopEdge = ball.y - ball.radius;
   let ballBottomEdge = ball.y + ball.radius;
 
+  let paddleCenterY = paddle.y + (paddle.height/2)
+
   if (ballLeftEdge <= paddleRightEdge &&
       ballRightEdge >= paddleLeftEdge) {
-    if (ballTopEdge <= paddleBottomEdge && ball.y >= paddleBottomEdge) {
-      ball.bounceVertical();
-    }
-    if (ballBottomEdge >= paddleTopEdge && ball.y <= paddleTopEdge) {
-      ball.bounceVertical();
+    if ((ballTopEdge <= paddleBottomEdge && ball.y >= paddleBottomEdge) ||
+        (ballBottomEdge >= paddleTopEdge && ball.y <= paddleTopEdge)) {
+      ball.bounceHorizontal();
     }
         
   }
 
   if (ballBottomEdge >= paddleTopEdge &&
     ballTopEdge <= paddleBottomEdge) {
-      if (ballLeftEdge <= paddleRightEdge && ballRightEdge >= paddleRightEdge) {
+      if ((ballLeftEdge <= paddleRightEdge && ballRightEdge >= paddleRightEdge) ||
+          (ballRightEdge >= paddleLeftEdge && ballLeftEdge <= paddleLeftEdge)) {
         ball.bounceHorizontal();
-      }
-      if (ballRightEdge >= paddleLeftEdge && ballLeftEdge <= paddleLeftEdge) {
-        ball.bounceHorizontal();
+        ball.setCollisionCount(ball.getCollisionCount() + 1);
+        ball.setAngle(Math.abs(paddleCenterY-ball.y)/50)
       }
   }
-
-
 
   return
 }
